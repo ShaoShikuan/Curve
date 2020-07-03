@@ -24,4 +24,4 @@ if __name__ == '__main__':
     # TODO:
     # 1. argv from console
     # 2. setup.py
-    create_app().run(host=conf.DEFAULT_HOST, port=conf.DEFAULT_PORT)
+    create_app().run(host=conf.DEFAULT_HOST, port=conf.DEFAULT_PORT, debug=True)

@@ -19,6 +19,8 @@ from v1 import utils
 from v1.utils import E_LABEL
 from v1.services import DataService, BandService
 from v1.services.plugin import Plugin
+import pandas as pd
+import os
 
 
 class DataDatanameCurves(Resource):
@@ -42,6 +44,32 @@ class DataDatanameCurves(Resource):
         plugin = Plugin(data_service)
         start_time = g.args['startTime'] / 1000
         end_time = g.args['endTime'] / 1000
+        # print('start_time:::')
+        # print(start_time)
+        # print('end_time:::')
+        # print(end_time)
+        # print('minus:::')
+        # print(end_time-start_time)
+        ref_reference = []
+        if (end_time-start_time) <= 43200:
+            print('上层目录：：')
+            print(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+            csv_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'stl.csv')
+            print(csv_path)
+            labels = ['timestamp', 'value', 'predict_label_3', 'predict_label_2_5', 'upper_3', 'lower_3', 'baseline', 'upper_2_5', 'lower_2_5']
+            data = pd.read_csv(csv_path, names=labels)
+            data = data.set_index('timestamp')
+            data = data.loc[start_time:end_time, ['upper_3', 'lower_3']]
+            ref = []
+            for i in data.index:
+                ref_unit = []
+                ref_unit.append(i*1000)
+                ref_unit.append(data.loc[i].values[0])
+                ref_unit.append(data.loc[i].values[1])
+                ref.append(tuple(ref_unit))
+            ref_line = dict({'data': ref, 'type': 'arearange', 'name': 'reference'})
+            global ref_reference
+            ref_reference.append(ref_line)
         # get raw
         line = data_service.get_line(start_time, end_time)
         # get base line
@@ -49,11 +77,17 @@ class DataDatanameCurves(Resource):
         # get label line
         label_line = self._get_label(line, base_line['data'])
         # get ref
-        ref_lines = self._get_refs(data_service, plugin, start_time, end_time)
+        # 得到原始的week on week 和 day on day
+        # ref_lines = self._get_refs(data_service, plugin, start_time, end_time)
+        # data = pd.read_csv('/home/ssk/tsad_flask-master (2)/api/tsad/stl.csv')
+        # print('data:::')
+        # print(data.head())
+        # print('ref_lines:::')
+        # print(ref_lines)
         # get band
         bands, band_lines = self._get_bands(data_service, base_line['data'], start_time, end_time)
 
-        trends = [base_line, label_line] + ref_lines + band_lines
+        trends = [base_line, label_line] + ref_reference + band_lines
         return self.render(data={
             'trends': trends,
             'bands': bands,

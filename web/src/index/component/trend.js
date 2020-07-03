@@ -37,7 +37,7 @@ export default class Trend extends Component {
                     noData: 'No data found in the uploaded file, please check.'
                 },
                 colors: ['#7cb5ec', '#80699B', '#90ed7d', '#f7a35c', '#8085e9',
-                    '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+                    '#f15c80', '#e4d354', '#8085e8', '#8d4653'],
                 noData: {
                     style: {
                         fontWeight: 'normal',
@@ -828,6 +828,7 @@ export default class Trend extends Component {
                 }
             });
             // Set the trend graph data
+            console.log(series)
             this.state.options.series = series;
             // Set the width of the trend graph
             let chartWidth = this.getTrendWidth();
@@ -949,7 +950,7 @@ export default class Trend extends Component {
 
     optionArearange(item) {
         item.lineWidth = 0;
-        item.color = 'rgb(222, 247, 222)';
+        item.color = 'rgb(221, 160, 221)';
         item.zIndex = 0;
         item.enableMouseTracking = false;
         item.showInLegend = true;
@@ -1045,6 +1046,7 @@ export default class Trend extends Component {
                         <h3 className="summary">
                             {this.renderSummary()}
                         </h3>
+                        {/* Band这里只负责右侧的曲线图例部分 */}
                         <Band series={this.state.options.series}
                               dataName={this.props.dataName}
                               redrawTrend={foldMenu => this.redrawTrend(foldMenu)}

@@ -9,7 +9,11 @@ Curve is originally developed by Baidu and Tsinghua NetMan Lab.
 
 <img src="https://raw.githubusercontent.com/baidu/Curve/master/doc/pic/index.png">
 
+
 ## Getting Started
+### VScode调试
+在web文件夹里面执行npm run build,将打包好的前段文件移动到api文件夹中，接下来在curve-master文件夹下执行./control.sh start启动前后端
+https://github.com/baidu/Curve
 
 ### Run and stop
 
